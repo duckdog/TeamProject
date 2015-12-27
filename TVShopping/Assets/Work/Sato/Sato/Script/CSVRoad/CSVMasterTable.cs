@@ -4,7 +4,7 @@ using System.Collections;
 public class CSVMasterTable : MasterTableBase<CSVScenarioData> 
 {
 	//FileName(Path)
-	private static readonly string _FilePath = "Route3";
+	private static readonly string _FilePath = "Route";
 	public void Load() { Load(_FilePath); }
 }
 

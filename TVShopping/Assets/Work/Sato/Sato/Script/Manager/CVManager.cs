@@ -49,8 +49,20 @@ public class CVManager : MonoBehaviour {
 	//再生
 	public void CVSoundPlay(){
 
-		if (_current_number < _Amount) {
+		if (_current_number < _Amount) 
+		{
 
+			_audio.clip = _cv_source [_current_number];
+			_audio.Play ();
+			_isPlay = true;
+			//次のサウンドに更新
+			_current_number++;
+
+		} 
+		else //WARNING!!: デバッグ処理です
+		{
+			//test このエルスは消します
+			_current_number = 0;
 			_audio.clip = _cv_source [_current_number];
 			_audio.Play ();
 			_isPlay = true;

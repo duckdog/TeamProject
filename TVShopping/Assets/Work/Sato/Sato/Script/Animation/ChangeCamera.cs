@@ -2,11 +2,12 @@
 using System.Collections;
 
 public class ChangeCamera : MonoBehaviour {
-
-
+	//
+	// 複数のカメラのオンオフを行います
+	// 現在使用中のカメラの情報もここで渡します
+	//
 	[SerializeField]//カメラ管理用格納庫
 	Camera[] SubCamera;
-	//現在の表示されてるカメラの配列番号
 	int _camera_number;
 	private int _set_number;
 	public int _SetNumber {
@@ -28,7 +29,7 @@ public class ChangeCamera : MonoBehaviour {
 	public Camera CurrentCamera{ get; set;}
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		_set_number = 0;
 		_camera_number = 0;
 		CurrentCamera = SubCamera [0];
@@ -40,7 +41,7 @@ public class ChangeCamera : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
-		//Debug用
+		//FixMe:Debug用
 		if (Input.GetKeyDown (KeyCode.LeftArrow)) {
 		
 			//写してるカメラをオフ

@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using System.Collections;
 
 public class ScenarioSetter : MonoBehaviour {
+
+	//
+	// シナリオ、カメラ演出、キャラクターアニメーションのデータを
+	// まとめて更新いたします。尚、データもとは、CSVデータです。
+	// Todo:データ量が多いので、どうしても長くなってます、直せたらリファ
+
+
 	//他クラス参照類
 	CharacterAnimator Jony;
 	CharacterAnimator Abery;
@@ -60,22 +67,18 @@ public class ScenarioSetter : MonoBehaviour {
 	
 	
 	//メインシナリオ
-	
 	//テキスト格納用
 	List<Scenariodate> _Main = new List<Scenariodate>();
 	List<Scenariodate> _A = new List<Scenariodate>();
 	List<Scenariodate> _B = new List<Scenariodate>();
 	List<Scenariodate> _C = new List<Scenariodate>();
-	
-	string[] _main_route_text;
-	string[] _A_route_text;
-	string[] _B_route_text;
-	string[] _C_route_text;
-	
+
 	Route _next_route;
 	public Route SetRoute{ get{ return _next_route;} set{ _next_route = value;}}
-	string _current_text;
 	float _timer;
+
+
+	string _current_text;
 	int[,] _current_text_number = new int[4,1];
 	public int CurrentTextNumber_A{
 		get {return _current_text_number[(int)Route.A,0]; }
@@ -90,11 +93,6 @@ public class ScenarioSetter : MonoBehaviour {
 		set { _current_text_number [(int)Route.C, 0] = value;}
 	}
 
-	int _main_text_number = 0;
-	int _a_text_number = 0;
-	int _b_text_number = 0;
-	int _c_text_number = 0;
-	
 	//フォント用変数
 	public GUISkin s_Skin;
 	GUIStyle Style;
@@ -102,17 +100,10 @@ public class ScenarioSetter : MonoBehaviour {
 	public float[] timer;
 	int gameroot = 0;
 
-	/// 
-	/// 
-	/// 
-	/// 
-	/// 
-	/// 
-	/// <summary>
-	///
-	/// </summary>
+
 	// Use this for initialization
 	void Start () {
+
 		Jony = (GameObject.FindGameObjectWithTag ("Jony")).GetComponent<CharacterAnimator>();
 		Abery = GameObject.FindGameObjectWithTag ("Abery").GetComponent<CharacterAnimator>();
 		_scenario_text = GameObject.FindObjectOfType<ScenarioText> ();
@@ -121,12 +112,12 @@ public class ScenarioSetter : MonoBehaviour {
 		Style = new GUIStyle();
 		State = new GUIStyleState();
 		
-		//CSVデータから、テキストデータ等を読み込む
+		//CSVデータから、ルートごとに分けてテキストデータ等を読み込む
 		var MasterTable = new CSVMasterTable();
 		MasterTable.Load();
 		foreach (var Master in MasterTable.All)
 		{
-			
+			//FixMe:みえにくのでい関数化後でします...
 			switch ((Route)Master.CurrentRoute) {
 				
 			case Route.Main:
@@ -166,24 +157,16 @@ public class ScenarioSetter : MonoBehaviour {
 		_A.Add(new Scenariodate("ENDTEXT",0,Route.Main));
 		_B.Add(new Scenariodate("ENDTEXT",0,Route.Main));
 		_C.Add(new Scenariodate("ENDTEXT",0,Route.Main));
-		
-		/*		_timer = _Main [0]._time;
-		_current_text = _Main [0]._text_date;
-		_scenario_text._Text.text = _Main [0]._text_date;*/
+
 		UpdateScenerio (Route.Main);
 		_next_route = Route.Main;
-
-		
-		//StartCoroutine(WaitTimeAndGo());
 		
 	}
 	
 	
 	// Update is called once per frame
 	void Update () {
-		
-		
-		
+
 		if(!_cv_reference._isPlay && _next_route != Route.NULL){
 
 			//テキストデータを更新	
@@ -332,17 +315,5 @@ public class ScenarioSetter : MonoBehaviour {
 		}
 	}
 	
-	void OnGUI()
-	{
-		
-		/*	GUI.skin = s_Skin;
-		
-		Style.fontSize = Screen.height/22;
-		Style.normal = State;
-		
-		State.textColor = Color.black;
-		
-		GUI.Label(new Rect(Screen.width/25, Screen.height / 2 + Screen.height / 4, 0, Screen.height / 10), _current_text, Style);
-*/
-	}
+
 }

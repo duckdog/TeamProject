@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿//
+//
+// カメラにジョニーの顔が当たったて（謎） 
+// レンズがひび割れるアニメーションです。
+//
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 public class CruckAnimator : MonoBehaviour {
