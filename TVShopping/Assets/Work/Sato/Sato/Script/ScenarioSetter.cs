@@ -13,6 +13,7 @@ public class ScenarioSetter : MonoBehaviour {
 	//他クラス参照類
 	CharacterAnimator Jony;
 	CharacterAnimator Abery;
+	ExtraAnimator _extra_animator;
 	ScenarioText _scenario_text;
 	ChangeCamera _view_camera;
 	CVManager _cv_reference;
@@ -43,24 +44,26 @@ public class ScenarioSetter : MonoBehaviour {
 		public CharacterAnimator.State _jony_state;
 		public CharacterAnimator.State _abery_state;
 		public int _camera_number;
-
+		public ExtraAnimator.Animation _extra_animation;
 		public Scenariodate(string text_date,float time ,Route next_route = Route.Main,
 		                    CharacterAnimator.Animation jony_animation = CharacterAnimator.Animation.UpScaling,
 		                    CharacterAnimator.Animation abery_animation = CharacterAnimator.Animation.UpScaling,
 		                    
 		                    CharacterAnimator.State jony_state = CharacterAnimator.State.Normal,
-			CharacterAnimator.State abery_state = CharacterAnimator.State.Normal,
-			int camera_number = -1)
+							CharacterAnimator.State abery_state = CharacterAnimator.State.Normal,
+							int camera_number = -1,
+							ExtraAnimator.Animation extra_animation = ExtraAnimator.Animation.NULL)
 		{
 			this._text_date = text_date;
 			this._next_route = next_route;
 			this._time = time;
 
-			this._jony_animation = jony_animation;
-			this._jony_state = jony_state;
+			this._jony_animation  = jony_animation;
+			this._jony_state      = jony_state;
 			this._abery_animation = abery_animation;
-			this._abery_state = abery_state;
-			this._camera_number = camera_number;
+			this._abery_state     = abery_state;
+			this._camera_number   = camera_number;
+			this._extra_animation = extra_animation;
 		}
 
 	}
@@ -106,6 +109,7 @@ public class ScenarioSetter : MonoBehaviour {
 
 		Jony = (GameObject.FindGameObjectWithTag ("Jony")).GetComponent<CharacterAnimator>();
 		Abery = GameObject.FindGameObjectWithTag ("Abery").GetComponent<CharacterAnimator>();
+		_extra_animator = GameObject.FindObjectOfType<ExtraAnimator> ();
 		_scenario_text = GameObject.FindObjectOfType<ScenarioText> ();
 		_view_camera = GameObject.FindObjectOfType<ChangeCamera> ();
 		_cv_reference = GameObject.FindObjectOfType<CVManager> ();	
@@ -117,36 +121,34 @@ public class ScenarioSetter : MonoBehaviour {
 		MasterTable.Load();
 		foreach (var Master in MasterTable.All)
 		{
-			//FixMe:みえにくのでい関数化後でします...
+			//一度データを取り出す。
+			Scenariodate data = new  Scenariodate (
+				Master.Scenario, Master.WatchTime, (Route)Master.NextRoute,
+				Master.JonyAnimation, Master.AberyAnimation,
+				Master.JonyState, Master.AberyState, Master.CameraNumber,
+				Master.ExtraAnimation);
+
+			//ルートにあわせて保存
 			switch ((Route)Master.CurrentRoute) {
-				
+				 
 			case Route.Main:
 				
-				_Main.Add (new Scenariodate (Master.Scenario, Master.WatchTime, (Route)Master.NextRoute,
-					Master.JonyAnimation, Master.AberyAnimation,
-					Master.JonyState, Master.AberyState, Master.CameraNumber));
-				
-				
+				_Main.Add (data);
+
 				break;
 			case Route.A:
 				
-				_A.Add (new Scenariodate (Master.Scenario, Master.WatchTime, (Route)Master.NextRoute,
-					Master.JonyAnimation, Master.AberyAnimation,
-					Master.JonyState, Master.AberyState, Master.CameraNumber));
+				_A.Add(data);
 				
 				break;
 			case Route.B:
 				
-				_B.Add (new Scenariodate (Master.Scenario, Master.WatchTime, (Route)Master.NextRoute,
-					Master.JonyAnimation, Master.AberyAnimation,
-					Master.JonyState, Master.AberyState, Master.CameraNumber));
+				_B.Add(data);
 				
 				break;
 			case Route.C:
 				
-				_C.Add (new Scenariodate (Master.Scenario, Master.WatchTime, (Route)Master.NextRoute,
-					Master.JonyAnimation, Master.AberyAnimation,
-					Master.JonyState, Master.AberyState, Master.CameraNumber));
+				_C.Add(data);
 				
 				break;
 				
@@ -301,6 +303,7 @@ public class ScenarioSetter : MonoBehaviour {
 			Jony._current_animation = (CharacterAnimator.Animation)data._jony_animation;
 			Jony._next_state = (CharacterAnimator.State)data._jony_state;
 			_view_camera._SetNumber = data._camera_number;
+			_extra_animator.PlayingExtraAnimation (data._extra_animation);
 			_cv_reference.CVSoundPlay ();
 		}
 	}

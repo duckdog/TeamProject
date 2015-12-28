@@ -24,11 +24,14 @@ public class CSVScenarioData : MasterBase
 	public CharacterAnimator.State JonyState { get; private set; }
 	public CharacterAnimator.State AberyState { get; private set; }
 	public int CameraNumber{ get; private set;}
+	public ExtraAnimator.Animation ExtraAnimation { get; private set;}
+
 	/*public int  JonyAnimation { get; private set; }
 	public int AberyAnimation { get; private set; }
 	public int JonyState { get; private set; }
 	public int AberyState { get; private set; }
 */
+
 }
 
 
