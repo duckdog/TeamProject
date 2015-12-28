@@ -42,7 +42,10 @@ public class CharacterAnimator : MonoBehaviour
 		UpScaling = 0,              //縦に拡縮
 		Hopping = 1,                //跳ねる
 		RotatoToChangeState = 2,    //回転して表情（画像）変更
+
+		//以下、特殊アニメーション
 		JonyFlyFace = 3,			//特殊アニメーション　顔がとびます
+
 
 		Last,           //番兵
 

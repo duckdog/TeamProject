@@ -94,7 +94,7 @@ public class FlyingFace : MonoBehaviour {
 		{
 			time += Time.deltaTime;
 			add_x = _Easing.OutExp(time,total_time,move_max,move_min);
-			Debug.Log ("abepos" + _abery);
+
 			Vector3 move_pos = new Vector3 (add_x,_abery.transform.localPosition.y,_abery.transform.localPosition.z);
 			_abery.transform.localPosition = move_pos; 
 
