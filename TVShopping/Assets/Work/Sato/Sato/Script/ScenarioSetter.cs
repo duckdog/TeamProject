@@ -16,6 +16,7 @@ public class ScenarioSetter : MonoBehaviour {
 	ExtraAnimator _extra_animator;
 	ScenarioText _scenario_text;
 	ChangeCamera _view_camera;
+	CameraAnimator _camera_animator;
 	CVManager _cv_reference;
 
 	public enum Route
@@ -24,7 +25,9 @@ public class ScenarioSetter : MonoBehaviour {
 		A = 1,
 		B = 2,
 		C = 3,
-		
+
+
+
 		NULL =-1,//Minigameに遷移の予定
 		
 	}
@@ -75,14 +78,30 @@ public class ScenarioSetter : MonoBehaviour {
 	List<Scenariodate> _A = new List<Scenariodate>();
 	List<Scenariodate> _B = new List<Scenariodate>();
 	List<Scenariodate> _C = new List<Scenariodate>();
+	public int _Main_TextLength{get{return _Main.Count; }}
+	public int _A_TextLength{get{return _A.Count; }}
+	public int _B_TextLength{get{return _B.Count; }}
+	public int _C_TextLength{get{return _C.Count; }}
 
+	Route _old_route;
 	Route _next_route;
-	public Route SetRoute{ get{ return _next_route;} set{ _next_route = value;}}
+	public Route SetRoute{ 
+		get{ return _next_route;} 
+		set
+		{
+			OthersScenarioSkip(value);//選んだルート以外のテキスト番号を次の分岐のところまでスキップ
+			_next_route = value;
+		}
+	}
 	float _timer;
 
 
 	string _current_text;
 	int[,] _current_text_number = new int[4,1];
+	public int CurrentTextNumber_Main{
+		get {return _current_text_number[(int)Route.Main,0]; }
+		set { _current_text_number [(int)Route.Main, 0] = value;}
+	}
 	public int CurrentTextNumber_A{
 		get {return _current_text_number[(int)Route.A,0]; }
 		set { _current_text_number [(int)Route.A, 0] = value;}
@@ -112,10 +131,12 @@ public class ScenarioSetter : MonoBehaviour {
 		_extra_animator = GameObject.FindObjectOfType<ExtraAnimator> ();
 		_scenario_text = GameObject.FindObjectOfType<ScenarioText> ();
 		_view_camera = GameObject.FindObjectOfType<ChangeCamera> ();
+		_camera_animator = GameObject.FindObjectOfType<CameraAnimator> ();
 		_cv_reference = GameObject.FindObjectOfType<CVManager> ();	
 		Style = new GUIStyle();
 		State = new GUIStyleState();
-		
+
+
 		//CSVデータから、ルートごとに分けてテキストデータ等を読み込む
 		var MasterTable = new CSVMasterTable();
 		MasterTable.Load();
@@ -160,6 +181,7 @@ public class ScenarioSetter : MonoBehaviour {
 		_B.Add(new Scenariodate("ENDTEXT",0,Route.Main));
 		_C.Add(new Scenariodate("ENDTEXT",0,Route.Main));
 
+		_cv_reference.Init ();
 		UpdateScenerio (Route.Main);
 		_next_route = Route.Main;
 		
@@ -176,22 +198,24 @@ public class ScenarioSetter : MonoBehaviour {
 	
 
 		}
+
+
 		//ミニゲーム等で、テキスト表示を一旦中止.
 		//デバッグキーがなくなったら、スイッチ分の中に入れるべき
-		if (_next_route == Route.NULL && _timer <= 0) {
+		if (_next_route == Route.NULL) {
 			
-		
+
 			_current_text = "";
 			//Fix: α版用デバッグキー　右クリックで、メインシナリオに遷移
 			if (Input.GetMouseButtonDown (1)) {
 				_next_route = Route.Main;
-				UpdateScenerio (_next_route);
+				//UpdateScenerio (_next_route);
 			}
 			
 			if (Input.GetKeyDown(KeyCode.A)) {
 				_next_route = Route.A;
-				UpdateScenerio (_next_route);
-				
+				//UpdateScenerio (_next_route);
+			
 				//シナリオをスキップ//次の分岐のテキストまで配列番号を更新
 				while (true) {
 					if (_B [CurrentTextNumber_B]._next_route != Route.B) {
@@ -202,6 +226,7 @@ public class ScenarioSetter : MonoBehaviour {
 					CurrentTextNumber_B++;
 				};
 				while (true) {
+
 					if (_C [CurrentTextNumber_C]._next_route != Route.C) {
 
 						CurrentTextNumber_C++;
@@ -215,7 +240,7 @@ public class ScenarioSetter : MonoBehaviour {
 
 			if (Input.GetKeyDown(KeyCode.B)) {
 				_next_route = Route.B;
-				UpdateScenerio (_next_route);
+				//UpdateScenerio (_next_route);
 				//シナリオをスキップ//次の分岐のテキストまで配列番号を更新
 				while (true) {
 					if (_A [CurrentTextNumber_A]._next_route != Route.A) {
@@ -237,7 +262,7 @@ public class ScenarioSetter : MonoBehaviour {
 
 			if (Input.GetKeyDown(KeyCode.C)) {
 				_next_route = Route.C;
-				UpdateScenerio (_next_route);
+				//UpdateScenerio (_next_route);
 
 				//シナリオをスキップ//次の分岐のテキストまで配列番号を更新
 				while (true) {
@@ -257,8 +282,6 @@ public class ScenarioSetter : MonoBehaviour {
 					CurrentTextNumber_B++;
 				};
 			}
-			
-
 		}
 		
 		
@@ -269,23 +292,29 @@ public class ScenarioSetter : MonoBehaviour {
 	void UpdateScenerio(Route route)
 	{
 		Scenariodate data = new Scenariodate();
+		_old_route = route;
+		int text_number = 0;
 		switch (route) {
 
 		case Route.Main:
-			 
-			data = _Main [_current_text_number [(int)Route.Main, 0]];
+			text_number = _current_text_number [(int)Route.Main, 0];
+			data        = _Main [text_number];
 			_current_text_number [(int)Route.Main, 0]++;
 			break;
 		case Route.A:
-			data = _A [_current_text_number [(int)route, 0]];
+			text_number = _current_text_number [(int)Route.A, 0];
+			data        = _A [text_number];
 			_current_text_number [(int)Route.A, 0]++;
 			break;
 		case Route.B:
-			data = _B [_current_text_number [(int)route, 0]];
+			text_number = _current_text_number [(int)Route.B, 0];
+			data        = _B [text_number];
 			_current_text_number [(int)Route.B, 0]++;
+
 			break;
 		case Route.C:
-			data = _C [_current_text_number [(int)route, 0]];
+			text_number = _current_text_number [(int)Route.C, 0];
+			data        = _C [text_number];
 			_current_text_number [(int)Route.C, 0]++;
 			break;
 		case Route.NULL:
@@ -303,11 +332,97 @@ public class ScenarioSetter : MonoBehaviour {
 			Jony._current_animation = (CharacterAnimator.Animation)data._jony_animation;
 			Jony._next_state = (CharacterAnimator.State)data._jony_state;
 			_view_camera._SetNumber = data._camera_number;
+		//_camera_animator.StartAnimation ();
 			_extra_animator.PlayingExtraAnimation (data._extra_animation);
-			_cv_reference.CVSoundPlay ();
+			_cv_reference.CVSoundPlay (text_number, route);
+
 		}
 	}
-	
+
+	//一個前のルートを取得します。
+	//なにかしらでルートがNullに進行したあと、分岐せず元のルートに戻る時に使用してください
+	public void BackToOldScenerioRoute()
+	{
+		_next_route = _old_route;
+
+	}
+	//進まなかったルートのテキストを、次の分岐のテキストまでに更新します
+	//ルート分岐が起こる際に使用します.※なお、プロパティのSetRouteで値を入れる際に使われてます。
+	void OthersScenarioSkip(Route chosed_rote,int route_patern = 2)
+	{
+		switch (chosed_rote) {
+		case Route.A:
+			//シナリオをスキップ//次の分岐のテキストまで配列番号を更新
+			while (true) {
+				if (_B [CurrentTextNumber_B]._next_route != Route.B) {
+
+					CurrentTextNumber_B++;
+					break;
+
+				}
+				CurrentTextNumber_B++;
+			}
+			;
+			while (true) {
+				if (_C [CurrentTextNumber_C]._next_route != Route.C) {
+
+					CurrentTextNumber_C++;
+					break;
+
+				}
+				CurrentTextNumber_C++;
+			}
+			;
+
+			break;
+
+		case Route.B:
+			while (true) {
+				if (_A [CurrentTextNumber_A]._next_route != Route.A) {
+
+					CurrentTextNumber_A++;
+					break;
+				}
+				CurrentTextNumber_A++;
+			}
+			;
+			while (true) {
+				if (_C [CurrentTextNumber_C]._next_route != Route.C) {
+
+					CurrentTextNumber_C++;
+					break;
+				}
+				CurrentTextNumber_C++;
+			}
+			;
+			break;
+		case Route.C:
+			while (true) {
+				if (_A [CurrentTextNumber_A]._next_route != Route.A) {
+
+					CurrentTextNumber_A++;
+					break;
+				}
+				CurrentTextNumber_A++;
+			}
+			;
+			while (true) {
+				if (_B [CurrentTextNumber_B]._next_route != Route.B) {
+
+					CurrentTextNumber_B++;
+					break;
+				}
+				CurrentTextNumber_B++;
+			}
+			;
+			break;
+		}
+
+
+
+	}
+		
+
 	IEnumerator WaitTimeAndGo()
 	{
 		for (int i = 0; i < timer.Length;i++ )

@@ -60,7 +60,20 @@ public class Easing : MonoBehaviour
         return time == totaltime ? max + min : max * (-Mathf.Pow(2, -10 * time / totaltime) + 1) + min;
     }
 
-	//Sってなんだろう
+
+	public double InOutCubic(float t,float totaltime,float max ,float min )
+	{
+		max -= min;
+		t /= totaltime;
+		if( t/2 < 1 )
+			return max/2*t*t*t + min;
+		t -= 2;
+		return max/2.0f * (t*t*t+2.0f) + min;
+
+	}
+
+	//挙動おかしい..いや正しい？のかな。minの値は定数にしておかないと、バウンドしてくれません。
+	//バウンス
 	public float OutBounce(float t,float totaltime,float max ,float min )
 	{
 		max -= min;

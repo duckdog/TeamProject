@@ -71,12 +71,10 @@ public class ScreenAnimator : MonoBehaviour {
 		while (_timer < _total_time) {
 
 			_timer += Time.deltaTime;
-			transform.position = new Vector3 (transform.position.x,
-				(float)_Easing.OutBounce (
-					_timer,
-					_total_time,
-					_defalt_pos,
-					_defalt_pos + _add_range), transform.position.z);
+			transform.position = 
+				new Vector3 (transform.position.x,
+				(float)_Easing.OutBounce (_timer,_total_time,_defalt_pos,_defalt_pos + _add_range),
+					transform.position.z);
 
 			yield return null;
 		}

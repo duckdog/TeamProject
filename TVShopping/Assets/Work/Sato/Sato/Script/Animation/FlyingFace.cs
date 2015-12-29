@@ -12,6 +12,7 @@ public class FlyingFace : MonoBehaviour {
 
 	//参照
 	ChangeCamera _Camera;
+	CameraAnimator _camera_animator;
 	Easing _Easing;
 	CruckAnimator _CruckAnimator;
 	WaitFade _WaitFade;
@@ -45,6 +46,7 @@ public class FlyingFace : MonoBehaviour {
 
 		_Easing = GameObject.FindObjectOfType<Easing> ();
 		_Camera = GameObject.FindObjectOfType<ChangeCamera>();
+		_camera_animator = GameObject.FindObjectOfType<CameraAnimator> ();
 		_CruckAnimator = GameObject.FindObjectOfType<CruckAnimator> ();
 		_scenario = GameObject.FindObjectOfType<ScenarioSetter> ();
 		_WaitFade = GameObject.FindObjectOfType<WaitFade> ();
@@ -129,9 +131,13 @@ public class FlyingFace : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
-		_do_fall = true;
-		_CruckAnimator._doCrack = true;
-		StartCoroutine (FallFace());
+
+		if (!_do_fall) {
+			_do_fall = true;
+			_CruckAnimator._doCrack = true;
+			StartCoroutine (FallFace ());
+			StartCoroutine (_camera_animator.RandomShake (_Camera.CurrentCamera));
+		}
 	}
 
 
@@ -207,7 +213,7 @@ public class FlyingFace : MonoBehaviour {
 		_WaitFade._DoFade = false;
 		transform.localPosition = _defalt_face_pos;
 		//シナリオ読み込みを再開
-		_scenario.SetRoute = ScenarioSetter.Route.Main;
+		_scenario.BackToOldScenerioRoute ();
 
 
 

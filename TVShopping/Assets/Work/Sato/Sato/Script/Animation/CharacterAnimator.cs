@@ -167,14 +167,14 @@ public class CharacterAnimator : MonoBehaviour
 		switch (_current_animation)
 		{
 
-		///////拡縮 ※正確には縮んでもとに戻るようにしてあります.///////////////
+		///////拡縮 ※正確には縮んでもとに戻るようにしてあります.///////////////////////
 		case Animation.UpScaling:
 
 			UpScaling();
 
 			break;
 
-			///////跳ねる/////////////////////////////////////////////////////////
+			///////跳ねる////////////////////////////////////////////////////////
 		case Animation.Hopping:
 
 			Hopping();

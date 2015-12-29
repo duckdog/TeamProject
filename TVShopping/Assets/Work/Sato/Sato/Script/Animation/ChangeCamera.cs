@@ -6,8 +6,11 @@ public class ChangeCamera : MonoBehaviour {
 	// 複数のカメラのオンオフを行います
 	// 現在使用中のカメラの情報もここで渡します
 	//
+
 	[SerializeField]//カメラ管理用格納庫
 	Camera[] SubCamera;
+	Vector3[] _camera_pos;
+
 	int _camera_number;
 	private int _set_number;
 	public int _SetNumber {
@@ -16,12 +19,13 @@ public class ChangeCamera : MonoBehaviour {
 
 		set {
 			if (value != -1 && value  != _camera_number) {
-				Debug.Log (_set_number + "SetCamera");
+
 				SubCamera [_camera_number].enabled = false;
+
 				_camera_number = value;
 				SubCamera [_camera_number ].enabled = true;
 				CurrentCamera = SubCamera [_camera_number ];
-				Debug.Log (_set_number + "CurrentCamera");
+
 			}
 		}
 	}
@@ -36,6 +40,7 @@ public class ChangeCamera : MonoBehaviour {
 		SubCamera [0].enabled = true;//MainCameraからスタート
 		SubCamera [1].enabled = false;
 		SubCamera [2].enabled = false;
+
 	}
 	
 	// Update is called once per frame
@@ -61,7 +66,7 @@ public class ChangeCamera : MonoBehaviour {
 
 
 	}
-	//デバッグ用カメラをチェンジ
+	//デバッグ用 :カメラをチェンジ
 	void SetCamera(int set_camera_number = 0){
 
 		SubCamera [_camera_number].enabled = false;
@@ -72,7 +77,6 @@ public class ChangeCamera : MonoBehaviour {
 	void CameraTarget(){
 		//Debug.用
 		SubCamera [_camera_number].transform.LookAt(GameObject.FindGameObjectWithTag("MainGoods").transform);
-
 	}
 
 
