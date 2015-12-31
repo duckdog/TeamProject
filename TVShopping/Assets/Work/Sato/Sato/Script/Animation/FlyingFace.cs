@@ -17,6 +17,8 @@ public class FlyingFace : MonoBehaviour {
 	CruckAnimator _CruckAnimator;
 	WaitFade _WaitFade;
 	SpriteRenderer _sprite_renderer;
+	[SerializeField]
+	public Sprite[] _images;
 	ScenarioSetter _scenario;
 	CharacterAnimator _character_animator;
 	//アニメーション時間、速度
@@ -34,6 +36,7 @@ public class FlyingFace : MonoBehaviour {
 	[SerializeField]
 	float _fall_range = 10;
 	public bool _do_flying_face;
+	public bool _do_flying_wig;
 	private bool _do_fall;
 	[SerializeField]
 	float _fall_time = 3.0f;
@@ -55,8 +58,10 @@ public class FlyingFace : MonoBehaviour {
 		_sprite_renderer = GetComponent<SpriteRenderer> ();
 
 
+
 		_sprite_renderer.enabled = false;
 		_do_flying_face = false;
+		_do_flying_wig = false;
 		_do_fall = false;
 
 		_timer = 0.0f;
@@ -71,12 +76,89 @@ public class FlyingFace : MonoBehaviour {
 		{
 			//シナリオを進まないようにして、.悲しいアニメーション開始
 			_scenario.SetRoute = ScenarioSetter.Route.NULL;
-
+			_sprite_renderer.sprite = _images [0];
 			StartCoroutine (FaceFlyingtoCamera());
 
 			//一度だけ通る
 			_do_flying_face = false;
 		}
+		if (_do_flying_wig) 
+		{
+			//シナリオを進まないようにして、.悲しいアニメーション開始
+			_scenario.SetRoute = ScenarioSetter.Route.NULL;
+			_sprite_renderer.sprite = _images [1];
+			StartCoroutine (WigFlyingtoCamera());
+			//一度だけ通る
+			_do_flying_wig = false;
+
+		}
+	}
+
+	private IEnumerator WigFlyingtoCamera()
+	{
+		float add_x = 0;
+		float time = 0;
+		float total_time = 0.5f;
+		float move_min = _abery.transform.localPosition.x;
+		float move_max = move_min + 3;
+
+		CharacterAnimator jony_animation = (GameObject.FindGameObjectWithTag ("Jony")).GetComponent<CharacterAnimator> ();
+		CharacterAnimator abey_animation = (GameObject.FindGameObjectWithTag ("Abery")).GetComponent<CharacterAnimator> ();
+		abey_animation._current_state = CharacterAnimator.State.Angry;
+
+		//忍び寄るアベリィ....
+		while(time < total_time)
+		{
+			time += Time.deltaTime;
+			add_x = _Easing.OutExp(time,total_time,move_max,move_min);
+
+			Vector3 move_pos = new Vector3 (add_x,_abery.transform.localPosition.y,_abery.transform.localPosition.z);
+			_abery.transform.localPosition = move_pos; 
+
+			yield return null;
+		}
+
+		//飛ぶ用の顔出現
+		time = 0;
+		_defalt_face_pos = transform.localPosition;
+		_target_pos = _Camera.CurrentCamera.transform.position;
+		_sprite_renderer.enabled = true;
+		jony_animation._current_state = CharacterAnimator.State.Angry;//ここをハゲに
+
+		//かつらを飛ばします!
+		while (time < 2) {
+		
+			//カメラにむかって突進!!!!!!!
+			time += Time.deltaTime;
+			transform.position = new Vector3 (
+				(float)_Easing.InQuad (time, _total_time, _target_pos.x, transform.position.x),
+				(float)_Easing.InQuad (time, _total_time, _target_pos.y, transform.position.y),
+				(float)_Easing.InQuad (time, _total_time, _target_pos.z, transform.position.z));
+
+			//一旦他のしょりへ　
+			yield return null;
+
+		}
+
+		time = 0;
+		//もとにもどるアベリィ....
+		while(time < 1)
+		{
+			time += Time.deltaTime;
+			add_x = _Easing.OutExp(time,total_time,move_min,move_max);
+
+			Vector3 move_pos = new Vector3 (add_x,_abery.transform.localPosition.y,_abery.transform.localPosition.z);
+			_abery.transform.localPosition = move_pos; 
+
+			yield return null;
+		}
+
+		//シナリオ読み込みを再開
+		transform.localPosition = _defalt_face_pos;
+		_sprite_renderer.enabled = false;
+		_scenario.BackToOldScenerioRoute ();
+		yield return null;
+
 	}
 
 	private IEnumerator FaceFlyingtoCamera()
@@ -164,6 +246,8 @@ public class FlyingFace : MonoBehaviour {
 				yield break;
 			}
 
+			//シナリオ読み込みを再開
+			_scenario.BackToOldScenerioRoute ();
 			yield return null;
 		}
 

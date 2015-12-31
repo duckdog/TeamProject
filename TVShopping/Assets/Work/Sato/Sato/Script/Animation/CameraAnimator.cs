@@ -5,11 +5,13 @@ public class CameraAnimator : MonoBehaviour {
 
 	public enum Animation
 	{
-		Zoom,
-		BounceZoom,
-		L_SlideIn,
-		R_SlideIn,
-		Shake,
+		Zoom = 1,
+		BounceZoom = 2,
+		L_SlideIn = 3,
+		R_SlideIn = 4,
+		Shake = 5,
+
+		Null = -1,
 
 	}
 	Easing _easing;

@@ -47,7 +47,10 @@ public class ScenarioSetter : MonoBehaviour {
 		public CharacterAnimator.State _jony_state;
 		public CharacterAnimator.State _abery_state;
 		public int _camera_number;
+		public CameraAnimator.Animation _camera_animation;
 		public ExtraAnimator.Animation _extra_animation;
+
+
 		public Scenariodate(string text_date,float time ,Route next_route = Route.Main,
 		                    CharacterAnimator.Animation jony_animation = CharacterAnimator.Animation.UpScaling,
 		                    CharacterAnimator.Animation abery_animation = CharacterAnimator.Animation.UpScaling,
@@ -55,6 +58,7 @@ public class ScenarioSetter : MonoBehaviour {
 		                    CharacterAnimator.State jony_state = CharacterAnimator.State.Normal,
 							CharacterAnimator.State abery_state = CharacterAnimator.State.Normal,
 							int camera_number = -1,
+							CameraAnimator.Animation camera_animation = CameraAnimator.Animation.Null,
 							ExtraAnimator.Animation extra_animation = ExtraAnimator.Animation.NULL)
 		{
 			this._text_date = text_date;
@@ -66,6 +70,7 @@ public class ScenarioSetter : MonoBehaviour {
 			this._abery_animation = abery_animation;
 			this._abery_state     = abery_state;
 			this._camera_number   = camera_number;
+			this._camera_animation = camera_animation;
 			this._extra_animation = extra_animation;
 		}
 
@@ -146,7 +151,8 @@ public class ScenarioSetter : MonoBehaviour {
 			Scenariodate data = new  Scenariodate (
 				Master.Scenario, Master.WatchTime, (Route)Master.NextRoute,
 				Master.JonyAnimation, Master.AberyAnimation,
-				Master.JonyState, Master.AberyState, Master.CameraNumber,
+				Master.JonyState, Master.AberyState,
+				Master.CameraNumber,Master.CameraAnimation,
 				Master.ExtraAnimation);
 
 			//ルートにあわせて保存
@@ -332,7 +338,7 @@ public class ScenarioSetter : MonoBehaviour {
 			Jony._current_animation = (CharacterAnimator.Animation)data._jony_animation;
 			Jony._next_state = (CharacterAnimator.State)data._jony_state;
 			_view_camera._SetNumber = data._camera_number;
-		//_camera_animator.StartAnimation ();
+		    _camera_animator.StartAnimation (data._camera_animation,_view_camera.CurrentCamera);
 			_extra_animator.PlayingExtraAnimation (data._extra_animation);
 			_cv_reference.CVSoundPlay (text_number, route);
 

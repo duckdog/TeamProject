@@ -9,7 +9,7 @@ public class CharacterLookAt : MonoBehaviour {
 	ChangeCamera _target_camera;
 
 	// Use this for initialization
-	void Awake () {
+	void Start() {
 
 		_target_camera = GameObject.FindObjectOfType<ChangeCamera>();
 		Vector3 target = -_target_camera.CurrentCamera.transform.position;

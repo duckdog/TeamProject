@@ -27,7 +27,7 @@ public class ExtraAnimator : MonoBehaviour {
 
 	ScreenAnimator _screen_animation;
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 
 		_screen_animation = GameObject.FindObjectOfType<ScreenAnimator> ();
 
