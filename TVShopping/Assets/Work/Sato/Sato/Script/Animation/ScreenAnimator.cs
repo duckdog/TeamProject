@@ -25,6 +25,7 @@ public class ScreenAnimator : MonoBehaviour {
 	void Start () {
 		_defalt_pos = transform.position.y;
 		_Easing = GameObject.FindObjectOfType<Easing> ();
+
 	
 	}
 	
@@ -84,4 +85,7 @@ public class ScreenAnimator : MonoBehaviour {
 		yield return null;
 	
 	}
+
+
+
 }

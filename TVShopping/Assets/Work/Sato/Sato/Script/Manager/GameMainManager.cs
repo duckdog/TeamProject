@@ -59,7 +59,7 @@ public class GameMainManager : MonoBehaviour {
         // クリックでリザルトへ遷移(※書き換えＯＫ！！※)
         if (Input.GetMouseButtonDown(0))
         {
-            Application.LoadLevel("Result");
+			// Application.LoadLevel("Result");
         }
 
     }

@@ -19,6 +19,8 @@ public class ScenarioSetter : MonoBehaviour {
 	CameraAnimator _camera_animator;
 	CVManager _cv_reference;
 
+	BruchButtonTextSetter _brunch_button;
+
 	public enum Route
 	{
 		Main = 0,
@@ -95,6 +97,7 @@ public class ScenarioSetter : MonoBehaviour {
 		set
 		{
 			OthersScenarioSkip(value);//選んだルート以外のテキスト番号を次の分岐のところまでスキップ
+
 			_next_route = value;
 		}
 	}
@@ -196,6 +199,10 @@ public class ScenarioSetter : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+
+
+
 
 		if(!_cv_reference._isPlay && _next_route != Route.NULL){
 
@@ -369,7 +376,7 @@ public class ScenarioSetter : MonoBehaviour {
 				CurrentTextNumber_B++;
 			}
 			;
-			while (true) {
+			/*while (true) {
 				if (_C [CurrentTextNumber_C]._next_route != Route.C) {
 
 					CurrentTextNumber_C++;
@@ -378,8 +385,7 @@ public class ScenarioSetter : MonoBehaviour {
 				}
 				CurrentTextNumber_C++;
 			}
-			;
-
+			;*/
 			break;
 
 		case Route.B:
@@ -392,7 +398,7 @@ public class ScenarioSetter : MonoBehaviour {
 				CurrentTextNumber_A++;
 			}
 			;
-			while (true) {
+			/*	while (true) {
 				if (_C [CurrentTextNumber_C]._next_route != Route.C) {
 
 					CurrentTextNumber_C++;
@@ -400,7 +406,7 @@ public class ScenarioSetter : MonoBehaviour {
 				}
 				CurrentTextNumber_C++;
 			}
-			;
+			;*/
 			break;
 		case Route.C:
 			while (true) {

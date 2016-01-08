@@ -145,7 +145,7 @@ public class CameraAnimator : MonoBehaviour {
 						camera.transform.localPosition.y,
 						(float)_easing.OutBounce(time,total_time,target_pos_z,target_pos_z - zoom_range));
 
-				Debug.Log (time);
+			
 				yield return null;
 			}
 

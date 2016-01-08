@@ -19,7 +19,7 @@ public class Easing : MonoBehaviour
 	List<float> _easing_timer;
     //Easing
     //徐々に加速
-    public double InQuad(double time, double totaltime, double max, double min)
+	public double InQuad(double time, double totaltime, double max, double min)
     {
 
         max -= min;

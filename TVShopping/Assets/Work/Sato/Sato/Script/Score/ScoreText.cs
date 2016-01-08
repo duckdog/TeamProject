@@ -43,6 +43,7 @@ public class ScoreText : MonoBehaviour {
         //スコア取得 //(毎回取得してるので無駄、あとでリファ)
         _score_value = _score_reference.ScoreValue;
 
+
         //表示してるスコアが実際のスコアと差があったら
         if (_current_score_value != _score_value) {
 
@@ -57,8 +58,8 @@ public class ScoreText : MonoBehaviour {
 
             }
 
-            //Score textを描画
-            //_score_text.text = _current_score_value.ToString();
+			//Score textを描画
+            _score_text.text = _current_score_value.ToString();
         }
         
 	}

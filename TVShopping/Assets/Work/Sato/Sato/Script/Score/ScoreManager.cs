@@ -9,6 +9,7 @@ public class ScoreManager : MonoBehaviour {
     public float ScoreValue
      {
         get { return _tv_rating; }
+
      }
 
     //スコア追加（視聴率アップ）
@@ -30,6 +31,6 @@ public class ScoreManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		Debug.Log (_tv_rating);
 	}
 }
